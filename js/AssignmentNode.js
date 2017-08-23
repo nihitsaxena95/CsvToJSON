@@ -26,15 +26,18 @@ MaindataReader.on('data',(chunk)=> {
 				}
 		}
 		if(asia.find(x => x === Element[1]) != undefined && (Element[Element.length - 3] == "SP.DYN.LE00.FE.IN" || Element[Element.length - 3] == "SP.DYN.LE00.MA.IN")) {
-		if(Asianmain.find(x => (x.year == Element[Element.length - 2] && x.Country == Element[1])) == undefined) {
-					let temp = { year : Element[Element.length - 2], 
-						Country : (Element[1].length == 3)?Element[1]:Element[2] }
+		if(Asianmain.find(x => (x.Country == Element[1])) == undefined) {
+					let temp = {Country : (Element[1].length == 3)?Element[1]:Element[2] }
 					temp[(Element[Element.length - 3] == "SP.DYN.LE00.FE.IN")?"LifeExpectancyFemale":"LifeExpectancyMale"] = parseFloat(Element[Element.length - 1]);
 					Asianmain.push(temp);
 				}
 				else {
-					let index = Asianmain.findIndex(x => x.year == Element[Element.length -2] && x.Country == Element[1]);
+					let index = Asianmain.findIndex(x => x.Country == Element[1]);
+					if(Asianmain[index][(Element[Element.length - 3] == "SP.DYN.LE00.FE.IN")?"LifeExpectancyFemale":"LifeExpectancyMale"] == undefined) {
 					Asianmain[index][(Element[Element.length - 3] == "SP.DYN.LE00.FE.IN")?"LifeExpectancyFemale":"LifeExpectancyMale"] = parseFloat(Element[Element.length - 1]);
+					} else {
+						Asianmain[index][(Element[Element.length - 3] == "SP.DYN.LE00.FE.IN")?"LifeExpectancyFemale":"LifeExpectancyMale"] = Asianmain[index][(Element[Element.length - 3] == "SP.DYN.LE00.FE.IN")?"LifeExpectancyFemale":"LifeExpectancyMale"] + parseFloat(Element[Element.length - 1]);
+					}
 				}
 		}
 	})
