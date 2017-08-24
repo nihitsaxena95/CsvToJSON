@@ -1,8 +1,8 @@
 let fs = require('fs');
 let MaindataReader = fs.createReadStream('./../json/Indicators.csv','UTF-8');
-let TopfiveWriter = fs.createWriteStream('./../json/Total.json');
-let AsianWriter = fs.createWriteStream('./../json/Asia.json');
-let IndianWriter = fs.createWriteStream('./../json/India.json');
+let TopfiveWriter = fs.createWriteStream('./../json/Total.json'); //Read Stream Total Value
+let AsianWriter = fs.createWriteStream('./../json/Asia.json');	//Read Stream Asian Value
+let IndianWriter = fs.createWriteStream('./../json/India.json'); //Read Stream India Value
 let Asianmain=[],Indiamain =[],Topmain=[];
 MaindataReader.on('data',(chunk)=> {
 	let data;
@@ -10,7 +10,7 @@ MaindataReader.on('data',(chunk)=> {
 	data.trim().split('\n').map((line) => {
 		let extra = line.split('\t');
 		let Element = extra[0].split(",");
-		if(Element[Element.length - 3] == "SP.DYN.LE00.IN") {
+		if(Element[Element.length - 3] == "SP.DYN.LE00.IN") { // Top 5 Values. 
 				Topmain.push({	Country : Element[0],
 								TotalVal : Element[Element.length - 1]   })
 			}
@@ -19,7 +19,7 @@ MaindataReader.on('data',(chunk)=> {
 					let temp = { year : Element[Element.length - 2] }
 					temp[(Element[Element.length - 3] == "SP.DYN.CBRT.IN")?"BIRTH":"DEATH"] = parseFloat(Element[Element.length - 1]);
 					Indiamain.push(temp);
-				}
+				}				//Indian Data
 				else {
 					let index = Indiamain.findIndex(x => x.year == Element[Element.length -2]);
 					Indiamain[index][(Element[Element.length - 3] == "SP.DYN.CBRT.IN")?"BIRTH":"DEATH"] = parseFloat(Element[Element.length - 1]);
@@ -30,7 +30,7 @@ MaindataReader.on('data',(chunk)=> {
 					let temp = {Country : (Element[1].length == 3)?Element[1]:Element[2] }
 					temp[(Element[Element.length - 3] == "SP.DYN.LE00.FE.IN")?"LifeExpectancyFemale":"LifeExpectancyMale"] = parseFloat(Element[Element.length - 1]);
 					Asianmain.push(temp);
-				}
+				}  //Asian Data
 				else {
 					let index = Asianmain.findIndex(x => x.Country == Element[1]);
 					if(Asianmain[index][(Element[Element.length - 3] == "SP.DYN.LE00.FE.IN")?"LifeExpectancyFemale":"LifeExpectancyMale"] == undefined) {
@@ -53,8 +53,8 @@ while(a.length < 5) {
  }
 i++;
 }
-	TopfiveWriter.write(JSON.stringify(a,null,2),'UTF-8');	
-	IndianWriter.write(JSON.stringify(Indiamain,null,2),'UTF-8');
-	AsianWriter.write(JSON.stringify(Asianmain,null,2),'UTF-8');
+	TopfiveWriter.write(JSON.stringify(a,null,2),'UTF-8'); //	Write Top values
+	IndianWriter.write(JSON.stringify(Indiamain,null,2),'UTF-8'); // Indian Values
+	AsianWriter.write(JSON.stringify(Asianmain,null,2),'UTF-8'); //Asian Values
 });
 let asia=['ARM', 'AZE', 'BHR', 'BGD', 'BTN', 'BRN', 'KHM', 'CHN', 'CXR', 'CCK', 'IOT', 'GEO', 'HKG', 'IND', 'IDN', 'IRN', 'IRQ', 'ISR', 'JPN', 'JOR', 'KAZ', 'KWT', 'KGZ', 'LAO', 'LBN', 'MAC', 'MYS', 'MDV', 'MNG', 'MMR', 'NPL', 'PRK', 'OMN', 'PAK', 'PSE', 'PHL', 'QAT', 'SAU', 'SGP', 'KOR', 'LKA', 'SYR', 'TWN', 'TJK', 'THA', 'TUR', 'TKM', 'ARE', 'UZB', 'VNM', 'YEM'];
